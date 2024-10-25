@@ -9,7 +9,7 @@ const Navbar = () => {
           href="/"
           className="justfy-center flex items-center gap-4 text-xl font-bold text-[#e06666]"
         >
-          <Image src="/logo.jpg" alt="Momentum Logo" width={32} height={32} />
+          <Image src="/Untitled-1.png" alt="Momentum Logo" width={32} height={32} />
           MOMENTUM
         </Link>
         <ul className="flex space-x-4">

@@ -20,7 +20,7 @@ export default function Page() {
         <div className="flex h-screen w-full items-center justify-center">
           <div className="flex h-full w-full flex-1 flex-col items-center justify-center bg-white">
             <Image
-              src="/logo.jpg"
+              src="/Untitled-1.png"
               alt="Momentum Logo"
               width={400}
               height={400}
@@ -39,11 +39,11 @@ export default function Page() {
             <div className="flex items-center justify-between">
               <h1 className="text-2xl font-bold text-gray-800">
                 My Project Board
-              </h1>
-              <button className="flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-white transition-colors hover:bg-blue-600">
+              </h1>{/* 
+              <button className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-400">
                 <Plus size={20} />
                 Add Board
-              </button>
+              </button> */}
             </div>
           </header>
 
