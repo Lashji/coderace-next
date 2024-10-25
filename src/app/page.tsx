@@ -51,7 +51,7 @@ export default function Page() {
             className="flex w-full items-start gap-6 overflow-x-auto bg-primary pb-6"
             style={{ padding: 10, paddingBottom: 25, borderRadius: 15 }}
           >
-            <BoardContainer />
+            <BoardContainer userName={userName} />
           </main>
         </div>
       </div>
