@@ -18,9 +18,11 @@ export function LoginForm({
       },
     );
 
+    const resData = await res.json();
+    console.log(resData);
+
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    setUserName(name);
-    console.log(res);
+    setUserName(resData.user.id);
   };
 
   return (

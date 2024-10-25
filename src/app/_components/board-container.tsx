@@ -1,165 +1,127 @@
 "use client";
 import { Board } from "./board";
-import type { Board as BoardType, Task } from "../../types";
+import type { Task } from "../../types";
 import { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { redirect } from "next/navigation";
+import { env } from "~/env";
 
 export default function BoardContainer({
   userName,
 }: {
   userName: string | undefined;
 }) {
-  const defaultBoards: BoardType[] = [
-    {
-      id: "1",
-      title: "To Do",
-      description: "",
-      difficulty: 0,
-      start_datetime: "",
-      end_datetime: "",
-    },
-    {
-      id: "2",
-      title: "In Progress",
-      description: "",
-      difficulty: 0,
-      start_datetime: "",
-      end_datetime: "",
-    },
-    {
-      id: "3",
-      title: "Done",
-      description: "",
-      difficulty: 0,
-      start_datetime: "",
-      end_datetime: "",
-    },
-  ];
-
-  const getBoards = async () => {
-    const taskRes = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/getTasks?user_id=${userName}`,
-    );
-    const taskData = (await taskRes.json()) as unknown as Task[];
-
-    const boardRes = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/getBoards?user_id=${userName}`,
-    );
-    const boardData = (await boardRes.json()) as unknown as BoardType[];
-
-    return boardData.map((board) => ({
-      ...board,
-      //   tasks: taskData.filter((task) => task.boardId === board.id),
-    }));
-  };
-
-  //   const { data: boards } = useQuery({
-  //     queryKey: ["get-boards"],
-  //     queryFn: () => {
-  //       const saved = localStorage.getItem("boards");
-  //       return saved
-  //         ? (JSON.parse(saved) as unknown as BoardType[])
-  //         : defaultBoards;
-  //     },
-  //   });
-
-  const [boards, setBoards] = useState<BoardType[]>(() => {
-    const saved = localStorage.getItem("boards");
-    return saved
-      ? (JSON.parse(saved) as unknown as BoardType[])
-      : defaultBoards;
-  });
+  const [tasks, setTasks] = useState<Task[]>([]);
 
   useEffect(() => {
-    localStorage.setItem("boards", JSON.stringify(boards));
-  }, [boards]);
+    const fetchAllTasks = async () => {
+      try {
+        const taskRes = await fetch(
+          `${env.NEXT_PUBLIC_BACKEND_URL}/getTasks?user_id=${userName}`,
+        );
+        const taskData = (await taskRes.json()) as Task[];
+        setTasks(taskData);
+        console.log("taskData", taskData);
+      } catch (error) {
+        console.error("Error fetching tasks:", error);
+      }
+    };
 
-  const handleAddTask = (boardId: string, text: string) => {
-    setBoards(
-      boards.map((board) => {
-        if (board.id === boardId) {
-          return {
-            ...board,
-            tasks: [
-              //   ...board.tasks,
-              { id: Date.now().toString(), text, completed: false },
-            ],
-          };
+    fetchAllTasks();
+  }, [userName]);
+
+  const getTasksByStatus = (status: string) => {
+    return tasks.filter((task) => {
+      if (status === "To Do")
+        return !task.completed && new Date(task.start_datetime) > new Date();
+      if (status === "In Progress")
+        return (
+          !task.completed &&
+          new Date(task.start_datetime) <= new Date() &&
+          new Date(task.end_datetime) > new Date()
+        );
+      if (status === "Done") return task.completed;
+      return false;
+    });
+  };
+
+  const handleAddTask = async (status: string, title: string) => {
+    // Implement API call to add a new task
+    // For now, we'll just add it to the local state
+    const newTask: Task = {
+      id: Date.now().toString(),
+      title,
+      description: "",
+      difficulty: 0,
+      start_datetime: new Date().toISOString(),
+      end_datetime: new Date().toISOString(),
+      completed: false,
+      notifications_sent: { 10: false, 30: false, 60: false },
+    };
+    setTasks([...tasks, newTask]);
+  };
+
+  const handleDeleteTask = async (taskId: string) => {
+    // Implement API call to delete the task
+    // For now, we'll just remove it from the local state
+    setTasks(tasks.filter((task) => task.id !== taskId));
+  };
+
+  const handleEditTask = async (taskId: string, updatedTask: Partial<Task>) => {
+    // Implement API call to update the task
+    // For now, we'll just update it in the local state
+    setTasks(
+      tasks.map((task) =>
+        task.id === taskId ? { ...task, ...updatedTask } : task,
+      ),
+    );
+  };
+
+  const handleMoveTask = async (taskId: string, newStatus: string) => {
+    // Implement API call to update the task's status
+    // For now, we'll just update it in the local state
+    setTasks(
+      tasks.map((task) => {
+        if (task.id === taskId) {
+          const updatedTask = { ...task };
+          if (newStatus === "To Do") {
+            updatedTask.completed = false;
+            updatedTask.start_datetime = new Date(
+              Date.now() + 86400000,
+            ).toISOString(); // Set start time to tomorrow
+          } else if (newStatus === "In Progress") {
+            updatedTask.completed = false;
+            updatedTask.start_datetime = new Date().toISOString();
+          } else if (newStatus === "Done") {
+            updatedTask.completed = true;
+          }
+          return updatedTask;
         }
-        return board;
+        return task;
       }),
     );
   };
 
-  const handleDeleteTask = (boardId: string, taskId: string) => {
-    setBoards(
-      boards.map((board) => {
-        if (board.id === boardId) {
-          return {
-            ...board,
-            // tasks: board.tasks.filter((task) => task.id !== taskId),
-          };
-        }
-        return board;
-      }),
+  const handleCompleteTask = async (taskId: string, completed: boolean) => {
+    // Implement API call to update the task's completion status
+    // For now, we'll just update it in the local state
+    setTasks(
+      tasks.map((task) => (task.id === taskId ? { ...task, completed } : task)),
     );
   };
 
-  const handleEditTask = (boardId: string, taskId: string, text: string) => {
-    setBoards(
-      boards.map((board) => {
-        if (board.id === boardId) {
-          return {
-            ...board,
-            // tasks: board.tasks.map((task) =>
-            //   task.id === taskId ? { ...task, text } : task,
-            // ),
-          };
-        }
-        return board;
-      }),
-    );
-  };
+  const boardStatuses = ["To Do", "In Progress", "Done"];
 
-  const handleMoveTask = (
-    fromBoardId: string,
-    toBoardId: string,
-    taskId: string,
-  ) => {
-    // const task = boards
-    //   .find((b) => b.id === fromBoardId)
-    //   ?.tasks.find((t) => t.id === taskId);
-    // if (!task) return;
-
-    setBoards(
-      boards.map((board) => {
-        if (board.id === fromBoardId) {
-          return {
-            ...board,
-            // tasks: board.tasks.filter((t) => t.id !== taskId),
-          };
-        }
-        if (board.id === toBoardId) {
-          return {
-            ...board,
-            // tasks: [...board.tasks, task],
-          };
-        }
-        return board;
-      }),
-    );
-  };
   return (
     <>
-      {boards.map((board) => (
+      {boardStatuses.map((status) => (
         <Board
-          key={board.id}
-          board={board}
-          onAddTask={handleAddTask}
+          key={status}
+          title={status}
+          tasks={getTasksByStatus(status)}
+          onAddTask={(title) => handleAddTask(status, title)}
           onDeleteTask={handleDeleteTask}
           onEditTask={handleEditTask}
-          onMoveTask={handleMoveTask}
+          onMoveTask={(taskId) => handleMoveTask(taskId, status)}
+          onCompleteTask={handleCompleteTask}
         />
       ))}
     </>

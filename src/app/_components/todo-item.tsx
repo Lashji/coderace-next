@@ -33,12 +33,12 @@ export function TodoItem({
       <span
         className={`flex-grow text-gray-700 ${todo.completed ? "text-gray-400 line-through" : ""}`}
       >
-        {todo.text}
+        {todo.description}
       </span>
 
       <div className="flex gap-2 opacity-0 transition-opacity group-hover:opacity-100">
         <button
-          onClick={() => onEdit(todo.id, todo.text)}
+          onClick={() => onEdit(todo.id, todo.description)}
           className="p-1 text-gray-400 transition-colors hover:text-blue-500"
         >
           <Edit2 size={16} />

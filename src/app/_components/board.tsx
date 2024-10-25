@@ -1,23 +1,27 @@
 import React from "react";
 import { Task } from "./task";
 import { TaskInput } from "./task-input";
-import type { Board as BoardType, Task as TaskType } from "../../types";
+import type { Task as TaskType } from "../../types";
 import { MoreVertical } from "lucide-react";
 
 interface BoardProps {
-  board: BoardType;
-  onAddTask: (boardId: string, text: string) => void;
-  onDeleteTask: (boardId: string, taskId: string) => void;
-  onEditTask: (boardId: string, taskId: string, text: string) => void;
-  onMoveTask: (fromBoardId: string, toBoardId: string, taskId: string) => void;
+  title: string;
+  tasks: TaskType[];
+  onAddTask: (title: string) => void;
+  onDeleteTask: (taskId: string) => void;
+  onEditTask: (taskId: string, updatedTask: Partial<TaskType>) => void;
+  onMoveTask: (taskId: string) => void;
+  onCompleteTask: (taskId: string, completed: boolean) => void;
 }
 
 export function Board({
-  board,
+  title,
+  tasks,
   onAddTask,
   onDeleteTask,
   onEditTask,
   onMoveTask,
+  onCompleteTask,
 }: BoardProps) {
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
@@ -32,8 +36,8 @@ export function Board({
       boardId: string;
       taskId: string;
     };
-    if (data.boardId !== board.id) {
-      onMoveTask(data.boardId, board.id, data.taskId);
+    if (data.boardId !== title) {
+      onMoveTask(data.taskId);
     }
   };
 
@@ -44,24 +48,29 @@ export function Board({
       onDrop={handleDrop}
     >
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="font-semibold text-gray-700">{board.title}</h2>
+        <h2 className="font-semibold text-gray-700">{title}</h2>
         <button className="rounded-md p-1 transition-colors hover:bg-gray-200">
           <MoreVertical size={16} className="text-gray-500" />
         </button>
       </div>
 
-      <TaskInput onAdd={(text) => onAddTask(board.id, text)} />
+      <TaskInput onAdd={(text) => onAddTask(text)} />
 
       <div className="mt-4 flex-grow space-y-2 overflow-y-auto">
-        {/* {board.tasks.map((task: TaskType) => (
+        {tasks.map((task: TaskType) => (
           <Task
             key={task.id}
+            boardId={title}
             task={task}
-            boardId={board.id}
-            onDelete={(taskId) => onDeleteTask(board.id, taskId)}
-            onEdit={(taskId, text) => onEditTask(board.id, taskId, text)}
+            onDelete={(taskId) => onDeleteTask(taskId)}
+            onEdit={(taskId, updatedTask) =>
+              onEditTask(taskId, updatedTask as Partial<TaskType>)
+            }
+            onComplete={(taskId, completed) =>
+              onCompleteTask(taskId, completed)
+            }
           />
-        ))} */}
+        ))}
       </div>
     </div>
   );

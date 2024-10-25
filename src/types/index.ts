@@ -1,8 +1,12 @@
 export interface Task {
-  id: string;
-  text: string;
   completed: boolean;
-  tasks: Task[];
+  description: string;
+  difficulty: number;
+  end_datetime: string;
+  id: string;
+  notifications_sent: { 10: boolean; 30: boolean; 60: boolean };
+  start_datetime: string;
+  title: string;
 }
 
 export interface Board {

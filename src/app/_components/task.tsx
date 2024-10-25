@@ -3,72 +3,81 @@ import { Trash2, Edit2 } from "lucide-react";
 import type { Task as TaskType } from "../../types";
 
 interface TaskProps {
-  task: TaskType;
   boardId: string;
+  task: TaskType;
   onDelete: (taskId: string) => void;
-  onEdit: (taskId: string, text: string) => void;
+  onEdit: (taskId: string, updatedTask: Partial<TaskType>) => void;
+  onComplete: (taskId: string, completed: boolean) => void;
 }
 
-export function Task({ task, boardId, onDelete, onEdit }: TaskProps) {
+export function Task({
+  boardId,
+  task,
+  onDelete,
+  onEdit,
+  onComplete,
+}: TaskProps) {
   const [isEditing, setIsEditing] = useState(false);
-  const [editText, setEditText] = useState(task.text);
+  const [editedTitle, setEditedTitle] = useState(task.title);
 
   const handleDragStart = (e: React.DragEvent) => {
     e.dataTransfer.setData(
       "text/plain",
-      JSON.stringify({
-        taskId: task.id,
-        boardId,
-      }),
+      JSON.stringify({ boardId, taskId: task.id }),
     );
-    e.dataTransfer.effectAllowed = "move";
   };
 
-  const handleEditSubmit = () => {
-    if (editText.trim() !== "") {
-      onEdit(task.id, editText.trim());
-      setIsEditing(false);
-    }
+  const handleEdit = () => {
+    onEdit(task.id, { title: editedTitle });
+    setIsEditing(false);
   };
 
-  if (isEditing) {
-    return (
-      <div className="rounded-lg bg-white p-3 shadow-sm">
-        <input
-          type="text"
-          value={editText}
-          onChange={(e) => setEditText(e.target.value)}
-          onBlur={handleEditSubmit}
-          onKeyDown={(e) => e.key === "Enter" && handleEditSubmit()}
-          className="w-full rounded border px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          autoFocus
-        />
-      </div>
-    );
-  }
+  const handleComplete = () => {
+    onComplete(task.id, !task.completed);
+  };
 
   return (
     <div
       draggable
       onDragStart={handleDragStart}
-      className="group cursor-move rounded-lg bg-white p-3 shadow-sm transition-shadow hover:shadow-md"
+      className="rounded-md bg-white p-3 shadow-sm"
     >
-      <div className="flex items-start justify-between gap-2">
-        <p className="flex-grow text-gray-700">{task.text}</p>
-        <div className="flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
-          <button
-            onClick={() => setIsEditing(true)}
-            className="rounded p-1 text-gray-400 transition-colors hover:text-blue-500"
+      <div className="flex items-center">
+        <input
+          type="checkbox"
+          checked={task.completed}
+          onChange={handleComplete}
+          className="mr-2 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+        />
+        {isEditing ? (
+          <input
+            type="text"
+            value={editedTitle}
+            onChange={(e) => setEditedTitle(e.target.value)}
+            onBlur={handleEdit}
+            onKeyPress={(e) => e.key === "Enter" && handleEdit()}
+            className="flex-grow rounded border border-gray-300 px-2 py-1 text-black focus:border-blue-500 focus:outline-none"
+            autoFocus
+          />
+        ) : (
+          <span
+            className={`flex-grow ${task.completed ? "text-gray-500 line-through" : "text-black"}`}
           >
-            <Edit2 size={14} />
-          </button>
-          <button
-            onClick={() => onDelete(task.id)}
-            className="rounded p-1 text-gray-400 transition-colors hover:text-red-500"
-          >
-            <Trash2 size={14} />
-          </button>
-        </div>
+            {task.title}
+          </span>
+        )}
+        <button
+          onClick={() => setIsEditing(!isEditing)}
+          className="ml-2 rounded-full p-1 text-gray-500 hover:bg-gray-100"
+        >
+          <Edit2 size={16} />
+        </button>
+        <button
+          onClick={() => onDelete(task.id)}
+          className="ml-2 rounded-full p-1 text-gray-500 hover:bg-gray-100"
+        >
+          <Trash2 size={16} />
+        </button>
       </div>
     </div>
   );
