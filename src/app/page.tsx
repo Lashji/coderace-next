@@ -20,7 +20,7 @@ export default function Page() {
         <div className="flex h-screen w-full items-center justify-center">
           <div className="flex h-full w-full flex-1 flex-col items-center justify-center bg-white">
             <Image
-              src="/logo.jpg"
+              src="/Untitled-1.png"
               alt="Momentum Logo"
               width={400}
               height={400}

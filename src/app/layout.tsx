@@ -9,7 +9,7 @@ import Navbar from "./_components/navbar";
 export const metadata: Metadata = {
   title: "Momentum",
   description: "Next level todo app",
-  icons: [{ rel: "icon", url: "/favicon.ico" }],
+  icons: [{ rel: "icon", url: "/favicon-96x96.png" }],
 };
 
 export default function RootLayout({
