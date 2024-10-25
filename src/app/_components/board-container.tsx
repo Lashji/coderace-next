@@ -5,30 +5,11 @@ import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { redirect } from "next/navigation";
 
-export default function BoardContainer() {
-  const [userName, setUserName] = useState("");
-
-  useEffect(() => {
-    const getUser = async () => {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/getUser`, {
-        method: "GET",
-      });
-      return (await res.json()) as unknown as string;
-    };
-
-    getUser()
-      .then((user) => {
-        if (user) {
-          setUserName(user);
-        } else {
-          redirect("/login");
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }, []);
-
+export default function BoardContainer({
+  userName,
+}: {
+  userName: string | undefined;
+}) {
   const defaultBoards: BoardType[] = [
     {
       id: "1",

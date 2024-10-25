@@ -3,7 +3,11 @@ import React, { useState } from "react";
 import { Rocket, ArrowRight } from "lucide-react";
 import { env } from "~/env";
 
-export function LoginForm() {
+export function LoginForm({
+  setUserName,
+}: {
+  setUserName: (name: string) => void;
+}) {
   const [name, setName] = useState("");
 
   const handleSubmit = async (name: string) => {
@@ -14,6 +18,8 @@ export function LoginForm() {
       },
     );
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    setUserName(name);
     console.log(res);
   };
 
@@ -32,7 +38,7 @@ export function LoginForm() {
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="block w-full rounded-lg border border-gray-300 px-4 py-3 shadow-sm transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-blue-500"
+            className="block w-full rounded-lg border border-gray-300 px-4 py-3 text-black shadow-sm transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-blue-500"
             placeholder="Enter your name"
             required
           />
