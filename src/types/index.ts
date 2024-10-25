@@ -2,12 +2,16 @@ export interface Task {
   id: string;
   text: string;
   completed: boolean;
+  tasks: Task[];
 }
 
 export interface Board {
   id: string;
   title: string;
-  tasks: Task[];
+  description: string;
+  difficulty: number;
+  start_datetime: string;
+  end_datetime: string;
 }
 
 export interface DragItem {

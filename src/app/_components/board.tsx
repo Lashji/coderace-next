@@ -53,7 +53,7 @@ export function Board({
       <TaskInput onAdd={(text) => onAddTask(board.id, text)} />
 
       <div className="mt-4 flex-grow space-y-2 overflow-y-auto">
-        {board.tasks.map((task: TaskType) => (
+        {/* {board.tasks.map((task: TaskType) => (
           <Task
             key={task.id}
             task={task}
@@ -61,7 +61,7 @@ export function Board({
             onDelete={(taskId) => onDeleteTask(board.id, taskId)}
             onEdit={(taskId, text) => onEditTask(board.id, taskId, text)}
           />
-        ))}
+        ))} */}
       </div>
     </div>
   );

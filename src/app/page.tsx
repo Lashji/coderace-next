@@ -3,10 +3,12 @@ import { Plus } from "lucide-react";
 import type { Board as BoardType, Task } from "../types";
 import { useEffect, useState } from "react";
 import BoardContainer from "./_components/board-container";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 export default async function Page() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center text-white">
+    <main className="flex min-h-screen flex-col items-center justify-center bg-primary/80 text-white">
       <div className="min-h-screen p-6">
         <div className="mx-auto max-w-[1400px]">
           <header className="mb-8">

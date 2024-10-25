@@ -1,19 +1,24 @@
 "use client";
 import React, { useState } from "react";
 import { Rocket, ArrowRight } from "lucide-react";
-import { login } from "../actions";
+import { env } from "~/env";
 
 export function LoginForm() {
   const [name, setName] = useState("");
 
   const handleSubmit = async (name: string) => {
-    if (name.trim()) {
-      await login(name.trim());
-    }
+    const res = await fetch(
+      `${env.NEXT_PUBLIC_BACKEND_URL}/createUser?user_id=${name}`,
+      {
+        method: "POST",
+      },
+    );
+
+    console.log(res);
   };
 
   return (
-    <form onSubmit={() => handleSubmit(name)} className="mt-8 w-2/3 space-y-6">
+    <form className="mt-8 w-2/3 space-y-6">
       <div className="space-y-2">
         <label
           htmlFor="name"
@@ -35,8 +40,9 @@ export function LoginForm() {
       </div>
 
       <button
-        type="submit"
+        type="button"
         className="group relative flex w-full items-center justify-center rounded-lg border border-transparent bg-gradient-to-r from-blue-500 to-purple-600 px-4 py-3 text-sm font-medium text-white transition-all duration-200 hover:from-blue-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        onClick={() => handleSubmit(name)}
       >
         <span className="absolute inset-y-0 left-0 flex items-center pl-3">
           <Rocket size={16} className="text-blue-100" />
