@@ -39,7 +39,7 @@ export function Board({
 
   return (
     <div
-      className="flex h-full w-80 flex-shrink-0 flex-col rounded-lg bg-gray-100 p-4"
+      className="flex h-full w-80 flex-shrink-0 flex-col rounded-lg bg-gray-200 p-4"
       onDragOver={handleDragOver}
       onDrop={handleDrop}
     >
