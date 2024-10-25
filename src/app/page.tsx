@@ -15,11 +15,11 @@ export default async function Page() {
             <div className="flex items-center justify-between">
               <h1 className="text-2xl font-bold text-gray-800">
                 My Project Board
-              </h1>
-              <button className="flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-white transition-colors hover:bg-blue-600">
+              </h1>{/* 
+              <button className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-400">
                 <Plus size={20} />
                 Add Board
-              </button>
+              </button> */}
             </div>
           </header>
 
