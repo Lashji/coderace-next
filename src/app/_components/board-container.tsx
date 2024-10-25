@@ -44,19 +44,41 @@ export default function BoardContainer({
   };
 
   const handleAddTask = async (status: string, title: string) => {
-    // Implement API call to add a new task
-    // For now, we'll just add it to the local state
-    const newTask: Task = {
-      id: Date.now().toString(),
-      title,
+    if (!userName) {
+      console.error("User ID is not available");
+      return;
+    }
+
+    const newTask = {
+      title: title,
       description: "",
       difficulty: 0,
       start_datetime: new Date().toISOString(),
-      end_datetime: new Date().toISOString(),
-      completed: false,
-      notifications_sent: { 10: false, 30: false, 60: false },
+      end_datetime: new Date(Date.now() + 86400000).toISOString(), // Set end time to 24 hours from now
     };
-    setTasks([...tasks, newTask]);
+
+    try {
+      const response = await fetch(
+        `${env.NEXT_PUBLIC_BACKEND_URL}/createTask?user_id=${userName}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newTask),
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to add task");
+      }
+
+      const addedTask = (await response.json()) as Task;
+      setTasks([...tasks, addedTask]);
+    } catch (error) {
+      console.error("Error adding task:", error);
+      // You might want to show an error message to the user here
+    }
   };
 
   const handleDeleteTask = async (taskId: string) => {
