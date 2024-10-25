@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Plus } from "lucide-react";
+import { Plus, Star } from "lucide-react";
 
 interface TaskInputProps {
   onAdd: (text: string) => void;
@@ -8,6 +8,7 @@ interface TaskInputProps {
 export function TaskInput({ onAdd }: TaskInputProps) {
   const [isAdding, setIsAdding] = useState(false);
   const [text, setText] = useState("");
+  const [rating, setRating] = useState(0);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,7 +26,7 @@ export function TaskInput({ onAdd }: TaskInputProps) {
         className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-gray-600 transition-colors hover:bg-gray-200 hover:text-gray-900"
       >
         <Plus size={16} />
-        <span>Add a task</span>
+        <span className="hover:bg-gray-100 px-4 py-2 rounded-lg">Add a task</span>
       </button>
     );
   }
@@ -40,6 +41,18 @@ export function TaskInput({ onAdd }: TaskInputProps) {
         rows={3}
         autoFocus
       />
+
+      <div className="flex space-x-1">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <Star
+            key={star}
+            className={`w-8 h-8 cursor-pointer ${star <= rating ? "text-yellow-400 fill-yellow-400" : "text-gray-300"
+              }`}
+            onClick={() => setRating(star)}
+          />
+        ))}
+      </div>
+
       <div className="flex gap-2">
         <button
           type="submit"
