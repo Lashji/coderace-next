@@ -2,7 +2,7 @@ import Link from "next/link";
 
 const Navbar = () => {
   return (
-    <nav className="bg-gray-800 p-4">
+    <nav className="bg-background p-4">
       <div className="container mx-auto flex items-center justify-between">
         <Link href="/" className="text-xl font-bold text-white">
           Momentum
